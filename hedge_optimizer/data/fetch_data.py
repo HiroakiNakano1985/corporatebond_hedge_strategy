@@ -28,14 +28,23 @@ load_dotenv(_project_root / ".env")
 
 
 def _get_fred_api_key() -> str:
-    """環境変数からFRED APIキーを取得する。"""
+    """環境変数またはStreamlit SecretsからFRED APIキーを取得する。"""
+    # 1. 環境変数から取得
     key = os.environ.get("FRED_API_KEY")
-    if not key:
-        raise EnvironmentError(
-            "FRED_API_KEY が設定されていません。"
-            ".env ファイルまたは環境変数で設定してください。"
-        )
-    return key
+    if key:
+        return key
+    # 2. Streamlit Secrets から取得（Streamlit Cloud用）
+    try:
+        import streamlit as st
+        key = st.secrets.get("FRED_API_KEY")
+        if key:
+            return key
+    except Exception:
+        pass
+    raise EnvironmentError(
+        "FRED_API_KEY が設定されていません。"
+        ".env ファイル、環境変数、またはStreamlit Secretsで設定してください。"
+    )
 
 
 def _date_range(years: int = DATA_YEARS) -> tuple[datetime, datetime]:
