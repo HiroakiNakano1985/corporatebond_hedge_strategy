@@ -26,7 +26,7 @@
 ■ リスクファクター（週次変動）:
 
   f1 = ΔR_USD      （米金利変化、%ポイント）
-  f2 = Δ(USDJPY)   （為替変化、対数リターン）
+  f2 = Δ(USDJPY)   （為替変化、単純リターン）
   f3 = ΔI_spread   （スプレッド変化、bp）
 
 ■ ポートフォリオ分散:
@@ -92,7 +92,7 @@ def portfolio_variance(
     Args:
         cov_matrix: 3×3共分散行列 [ΔR_USD, Δ(USDJPY), ΔI_spread]
             - ΔR_USD: %ポイント単位
-            - Δ(USDJPY): 対数リターン
+            - Δ(USDJPY): 単純リターン
             - ΔI_spread: bp単位
 
     Returns:

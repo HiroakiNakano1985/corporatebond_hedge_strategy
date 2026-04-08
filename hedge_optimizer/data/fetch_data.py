@@ -156,7 +156,7 @@ def compute_weekly_changes(df: pd.DataFrame) -> pd.DataFrame:
     Returns:
         DataFrame with columns:
         - d_rate_usd: 米金利変化（%ポイント）
-        - d_usdjpy: ドル円変化（対数リターン）
+        - d_usdjpy: ドル円変化（単純リターン）
         - d_i_spread: I_spread変化（bp）
     """
     changes = pd.DataFrame(index=df.index)
@@ -164,8 +164,8 @@ def compute_weekly_changes(df: pd.DataFrame) -> pd.DataFrame:
     # 米金利変化（%ポイント）
     changes["d_rate_usd"] = df["ust_10y"].diff()
 
-    # ドル円変化（対数リターン）
-    changes["d_usdjpy"] = np.log(df["usdjpy"] / df["usdjpy"].shift(1))
+    # ドル円変化（単純リターン）
+    changes["d_usdjpy"] = df["usdjpy"].pct_change()
 
     # I_spread変化（bp）
     changes["d_i_spread"] = df["i_spread"].diff()
@@ -196,7 +196,7 @@ def compute_historical_stats(changes: pd.DataFrame) -> dict:
     mean_a = mean_w * 52
     std_a = std_w * np.sqrt(52)
 
-    # E[Δ(USDJPY)] は対数リターンなので年率化して%変換（×100）
+    # E[Δ(USDJPY)] は単純リターンなので年率化して%変換（×100）
     e_fx_return = mean_a["d_usdjpy"] * 100
 
     return {
