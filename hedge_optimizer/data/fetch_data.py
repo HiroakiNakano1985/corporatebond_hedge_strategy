@@ -13,7 +13,7 @@ from pathlib import Path
 
 import numpy as np
 import pandas as pd
-import pandas_datareader.data as web
+from fredapi import Fred
 from dotenv import load_dotenv
 
 from hedge_optimizer.config import (
@@ -57,8 +57,8 @@ def _date_range(years: int = DATA_YEARS) -> tuple[datetime, datetime]:
 def fetch_single_series(series_id: str, start: datetime, end: datetime) -> pd.Series:
     """FREDから単一系列を取得する。"""
     api_key = _get_fred_api_key()
-    df = web.DataReader(series_id, "fred", start, end, api_key=api_key)
-    return df.iloc[:, 0]
+    fred = Fred(api_key=api_key)
+    return fred.get_series(series_id, observation_start=start, observation_end=end)
 
 
 def fetch_all_series() -> pd.DataFrame:
